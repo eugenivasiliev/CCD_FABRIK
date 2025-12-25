@@ -15,6 +15,8 @@ namespace Geometry
         public Transform parent;
         public System.Collections.Generic.List<Transform> children;
 
+        public Transform firstChild => children[0];
+
         [UnityEngine.SerializeField]
         private Vector3 localPosition = Vector3.zero;
         public Vector3 position
