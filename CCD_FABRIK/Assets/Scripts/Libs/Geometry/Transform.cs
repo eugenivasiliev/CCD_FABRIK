@@ -1,4 +1,3 @@
-using System.Drawing;
 using Math;
 
 namespace Geometry
@@ -113,6 +112,40 @@ namespace Geometry
         {
             this.transform.position = this.position;
             this.transform.rotation = this.rotation;
+        }
+
+        public T GetComponentInChildren<T>() where T : UnityEngine.Component
+        {
+            foreach (Transform child in this.children)
+                if(child.gameObject.TryGetComponent<T>(out T component)) return component;
+            return null;
+        }
+
+        public void LookAt(Vector3 target)
+        {
+            Vector3 targetForward = (target - position).Normalized;
+            Vector3 thisForward = this.rotation * Vector3.forward;
+            if ((targetForward - thisForward).SqrMagnitude < 0.01d) return;
+            Vector3 axis = Vector3.Cross(thisForward, targetForward);
+            double angle = Vector3.Angle(thisForward, targetForward);
+            UnityEngine.Debug.Log("Fwd " + thisForward.x + " " + thisForward.y + " " + thisForward.z);
+            UnityEngine.Debug.Log(axis.x + " " + axis.y + " " + axis.z + " " + angle);
+            rotation *= new Quaternion(axis, angle);
+        }
+
+        public void LookAt(Vector3 target, Vector3 up)
+        {
+            LookAt(target);
+            Vector3 thisForward = this.rotation * Vector3.forward;
+            UnityEngine.Debug.Log("Fwd " + thisForward.x + " " + thisForward.y + " " + thisForward.z);
+            Vector3 thisUp = this.rotation * Vector3.up;
+            Vector3 targetUp = up.Normalized;
+            if ((targetUp - thisUp).SqrMagnitude < 0.01d) return;
+            Plane plane = new Plane(thisForward, position);
+            Vector3 targetUpProjected = plane.Projection(targetUp);
+            UnityEngine.Debug.Log("Proj: " + targetUpProjected.x + " " + targetUpProjected.y + " " + targetUpProjected.z);
+            Quaternion q = new Quaternion(thisForward, Vector3.Angle(thisUp, targetUpProjected));
+            rotation = q * rotation;
         }
     }
 }

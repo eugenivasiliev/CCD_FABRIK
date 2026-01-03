@@ -143,7 +143,11 @@ namespace Math
         public readonly Vector3 Cross(Vector3 v) => Vector3.Cross(this, v);
 
         /// <returns>Angle between two vectors.</returns>
-        public static double Angle(Vector3 v1, Vector3 v2) => (v1 * v2) /(v1.Magnitude *  v2.Magnitude);
+        public static double Angle(Vector3 v1, Vector3 v2)
+        {
+            if((v1 - v2).SqrMagnitude < 0.01d) return 0;
+            return Functions.Arccos((v1 * v2) / (v1.Magnitude * v2.Magnitude));
+        }
 
         /// <returns>Angle with another vector.</returns>
         public readonly double Angle(Vector3 v) => Vector3.Angle(this, v);
@@ -151,7 +155,11 @@ namespace Math
         /// <param name="v1">Vector projected.</param>
         /// <param name="v2">Vector projected onto.</param>
         /// <returns>Projection from one vector onto another</returns>
-        public static Vector3 Project(Vector3 v1, Vector3 v2) => ((v1 * v2) / v2.SqrMagnitude) * v2;
+        public static Vector3 Project(Vector3 v1, Vector3 v2)
+        {
+            UnityEngine.Debug.Assert(v2.SqrMagnitude > 0);
+            return ((v1 * v2) / v2.SqrMagnitude) * v2;
+        }
 
         /// <param name="v">Vector projected onto.</param>
         /// <returns>Projection from this vector onto another</returns>
