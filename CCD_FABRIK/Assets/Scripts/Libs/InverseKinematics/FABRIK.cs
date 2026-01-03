@@ -17,8 +17,7 @@ namespace InverseKinematics
         private double totalDistance;
         private Transform end;
 
-        private readonly uint iterations = 10;
-        private readonly double tolerance = 0.01d;
+        
 
         void Start()
         {
@@ -33,9 +32,9 @@ namespace InverseKinematics
         {
             if ((target.position - root.position).Magnitude > totalDistance) return;
 
-            for (int k = 0; k < iterations; ++k)
+            for (int k = 0; k < Controller.iterations; ++k)
             {
-                if ((target.position - end.position).Magnitude < tolerance) return;
+                if ((target.position - end.position).Magnitude < Controller.tolerance) return;
 
                 Forward();
                 Backward();

@@ -16,8 +16,6 @@ namespace InverseKinematics
         private double totalDistance;
         private Transform end;
 
-        private readonly uint iterations = 10;
-        private readonly double tolerance = 0.01d;
         private readonly double smartAngleTolerance = 0.1d;
 
 
@@ -31,7 +29,7 @@ namespace InverseKinematics
 
         void Update()
         {
-            if ((target.position - end.position).Magnitude < tolerance ||
+            if ((target.position - end.position).Magnitude < Controller.tolerance ||
                 (target.position - root.position).Magnitude > totalDistance) return;
 
             int k = 0;
@@ -45,7 +43,7 @@ namespace InverseKinematics
                     joints[i].rotation *= new Quaternion(axis, ang);
 
                     //Early exit
-                    if ((target.position - end.position).Magnitude < tolerance || k / joints.Count > iterations) return;
+                    if ((target.position - end.position).Magnitude < Controller.tolerance || k / joints.Count > Controller.iterations) return;
 
                     if (ang > smartAngleTolerance) i = joints.Count;
 
