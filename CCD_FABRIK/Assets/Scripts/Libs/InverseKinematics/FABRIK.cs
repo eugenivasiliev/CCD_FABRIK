@@ -17,10 +17,11 @@ namespace InverseKinematics
         private double totalDistance;
         private Transform end;
 
-        
+        private readonly System.Collections.Generic.List<string> tags = new System.Collections.Generic.List<string> { "Joint", "End" };
 
-        void Start()
+        public void Init()
         {
+            UnityEngine.Debug.Log("FABRIK");
             root = GetComponent<Transform>();
             rootStartPos = root.position;
             joints = Utils.GetJoints(root);
@@ -48,9 +49,9 @@ namespace InverseKinematics
             end.position = target.position;
             for (int i = joints.Count - 1; i >= 0; --i)
             {
-                Vector3 direction = (joints[i].position - joints[i].firstChild.position).Normalized;
+                Vector3 direction = (joints[i].position - joints[i].GetChildByTag(tags).position).Normalized;
                 double length = dists[i];
-                joints[i].position = joints[i].firstChild.position + length * direction;
+                joints[i].position = joints[i].GetChildByTag(tags).position + length * direction;
             }
         }
 
@@ -60,11 +61,11 @@ namespace InverseKinematics
         private void Backward()
         {
             root.position = rootStartPos;
-            for (int i = 0; i < joints.Count; ++i)
+            for (int i = 0; i < joints.Count - 1; ++i)
             {
-                Vector3 direction = (joints[i].firstChild.position - joints[i].position).Normalized;
+                Vector3 direction = (joints[i].GetChildByTag(tags).position - joints[i].position).Normalized;
                 double length = dists[i];
-                joints[i].firstChild.position = joints[i].position + length * direction;
+                joints[i].GetChildByTag(tags).position = joints[i].position + length * direction;
             }
         }
     }

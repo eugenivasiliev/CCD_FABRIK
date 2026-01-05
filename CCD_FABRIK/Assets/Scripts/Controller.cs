@@ -3,7 +3,7 @@ using Math;
 
 public class Controller : UnityEngine.MonoBehaviour
 {
-    static public uint iterations = 10;
+    static public uint iterations = 20;
     static public double tolerance = 0.01d;
 
     [UnityEngine.SerializeField] private double speed = 1d;

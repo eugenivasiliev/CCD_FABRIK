@@ -11,12 +11,12 @@ public class MeshRotationHandler : UnityEngine.MonoBehaviour
     {
         Transform = this.GetComponent<Transform>();
         MeshTransform = Transform.GetComponentInChildren<UnityEngine.MeshRenderer>().GetComponent<Transform>();
-        UnityEngine.Debug.Log(MeshTransform.gameObject.name);
     }
 
     void Update()
     {
         if (MeshTransform.colliding) SceneManager.ReloadScene();
-        MeshTransform.LookAtPivoting(Transform.GetChildByTag("Joint").position, Vector3.up);
+        Transform target = Transform.GetChildByTag(new System.Collections.Generic.List<string>{ "Joint", "End" });
+        MeshTransform.LookAtPivoting(target.position, Vector3.up);
     }
 }

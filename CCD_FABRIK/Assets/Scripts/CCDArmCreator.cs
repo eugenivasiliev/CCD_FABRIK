@@ -3,7 +3,7 @@ using Geometry;
 using InverseKinematics;
 using Math;
 
-public class ArmCreator : UnityEngine.MonoBehaviour
+public class CCDArmCreator : UnityEngine.MonoBehaviour
 {
     [UnityEngine.SerializeField] private Vector3 startPos;
     [UnityEngine.SerializeField] private Transform target;
@@ -19,7 +19,6 @@ public class ArmCreator : UnityEngine.MonoBehaviour
         List<Transform> joints = new List<Transform>();
         UnityEngine.GameObject rootGO = Instantiate(rootJointPrefab, startPos, Quaternion.identity);
         root = rootGO.transform.GetChild(0).GetComponent<Transform>();
-        Transform rootMesh = rootGO.transform.GetChild(1).GetComponent<Transform>();
         joints.Add(root);
         for (int i = 1; i < armLength; i++)
         {
@@ -36,21 +35,17 @@ public class ArmCreator : UnityEngine.MonoBehaviour
         for (int i = 0; i < armLength - 1; i++)
         {
             joints[i].children.Add(joints[i+1]);
-            Transform mesh = joints[i].transform.parent.GetChild(1).GetComponent<Transform>();
             transformManager.transforms.Add(joints[i]);
-            transformManager.transforms.Add(mesh);
         }
-        Transform lastMesh = joints[(int)armLength - 1].transform.parent.GetChild(1).GetComponent<Transform>();
         transformManager.transforms.Add(joints[(int)armLength-1]);
-        transformManager.transforms.Add(lastMesh);
         transformManager.transforms.Add(end);
-        root.GetComponent<FABRIK>().target = target;
+        root.GetComponent<CCD>().target = target;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        root.GetComponent<FABRIK>().Init();
+        root.GetComponent<CCD>().Init();
     }
 
     // Update is called once per frame

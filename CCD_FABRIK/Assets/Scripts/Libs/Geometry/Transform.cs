@@ -133,6 +133,13 @@ namespace Geometry
             return null;
         }
 
+        public Transform GetChildByTag(System.Collections.Generic.List<string> tags)
+        {
+            foreach (Transform child in this.children)
+                if (tags.Contains(child.Tag)) return child;
+            return null;
+        }
+
         public void LookAt(Vector3 target)
         {
             Vector3 targetForward = (target - position).Normalized;

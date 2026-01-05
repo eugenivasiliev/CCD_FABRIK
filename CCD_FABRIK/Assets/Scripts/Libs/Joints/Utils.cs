@@ -21,7 +21,6 @@ namespace Joints
                 joints.Add(nextJoint);
                 curJoint = nextJoint;
             }
-            //Remove last since it's the end effector, not a joint
             return joints;
         }
 
@@ -39,8 +38,6 @@ namespace Joints
                 dists.Add(dist);
                 total += dist;
             }
-            UnityEngine.Debug.Assert(end != null);
-            UnityEngine.Debug.Assert(joints[joints.Count - 1] != null);
             dist = (end.position - joints[joints.Count - 1].position).Magnitude;
             dists.Add(dist);
             total += dist;
