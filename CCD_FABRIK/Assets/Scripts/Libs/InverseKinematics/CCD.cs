@@ -29,8 +29,7 @@ namespace InverseKinematics
 
         void Update()
         {
-            if ((target.position - end.position).Magnitude < Controller.tolerance ||
-                (target.position - root.position).Magnitude > totalDistance) return;
+            if ((target.position - end.position).Magnitude < Controller.tolerance) return;
 
             int k = 0;
             while (true)

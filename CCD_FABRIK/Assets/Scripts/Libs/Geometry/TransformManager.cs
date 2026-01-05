@@ -6,7 +6,7 @@ namespace Geometry {
     /// </summary>
     public class TransformManager : UnityEngine.MonoBehaviour
     {
-        [UnityEngine.SerializeField] private List<Transform> transforms = new List<Transform>();
+        public List<Transform> transforms = new List<Transform>();
         void Awake()
         {
             foreach (Transform t in transforms) t.Setup();

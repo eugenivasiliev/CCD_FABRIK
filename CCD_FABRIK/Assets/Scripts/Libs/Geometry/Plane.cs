@@ -26,8 +26,6 @@ namespace Geometry
             Vector3 x = Vector3.Cross(n, v);
             Vector3 y = Vector3.Cross(n, x);
 
-            UnityEngine.Debug.Log("X: " + x.x + " " + x.y + " " + x.z);
-
             Vector3 vx = Vector3.Project(v, x);
             Vector3 vy = Vector3.Project(v, y);
 

@@ -1,5 +1,6 @@
 using Math;
 using Geometry;
+using Game;
 
 public class MeshRotationHandler : UnityEngine.MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class MeshRotationHandler : UnityEngine.MonoBehaviour
 
     void Update()
     {
-        MeshTransform.LookAt(Transform.children[0].position, Vector3.up + 0.1d * Vector3.forward);
+        if (MeshTransform.colliding) SceneManager.ReloadScene();
+        MeshTransform.LookAtPivoting(Transform.GetChildByTag("Joint").position, Vector3.up);
     }
 }

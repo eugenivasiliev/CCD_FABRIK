@@ -14,7 +14,11 @@ namespace Math
         public static double Arccos(double c) => System.Math.Acos(c);
 
         public static double Min(double a, double b) => (a < b) ? a : b;
+        public static int Min(int a, int b) => (a < b) ? a : b;
+        public static uint Min(uint a, uint b) => (a < b) ? a : b;
         public static double Max(double a, double b) => (a > b) ? a : b;
+        public static int Max(int a, int b) => (a > b) ? a : b;
+        public static uint Max(uint a, uint b) => (a > b) ? a : b;
         public static double Clamp(double val, double min, double max) => Min(Max(val, min), max);
 
         /// <summary>

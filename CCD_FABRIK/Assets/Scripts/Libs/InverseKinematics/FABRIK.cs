@@ -11,7 +11,7 @@ namespace InverseKinematics
     {
         private Transform root;
         private Vector3 rootStartPos;
-        [UnityEngine.SerializeField] private Transform target;
+        public Transform target;
         private System.Collections.Generic.List<Transform> joints;
         private System.Collections.Generic.List<double> dists;
         private double totalDistance;
@@ -24,14 +24,13 @@ namespace InverseKinematics
             root = GetComponent<Transform>();
             rootStartPos = root.position;
             joints = Utils.GetJoints(root);
-            end = joints[joints.Count - 1].firstChild;
+            UnityEngine.Debug.Log(joints.Count);
+            end = joints[joints.Count - 1].GetChildByTag("End");
             dists = Utils.GetDists(joints, end, out totalDistance);
         }
 
         void Update()
         {
-            if ((target.position - root.position).Magnitude > totalDistance) return;
-
             for (int k = 0; k < Controller.iterations; ++k)
             {
                 if ((target.position - end.position).Magnitude < Controller.tolerance) return;

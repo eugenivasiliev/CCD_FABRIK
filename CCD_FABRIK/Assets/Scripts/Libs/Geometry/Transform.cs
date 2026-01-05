@@ -1,4 +1,5 @@
 using Math;
+using Unity.VisualScripting;
 
 namespace Geometry
 {
@@ -11,8 +12,12 @@ namespace Geometry
     /// </remarks>
     public class Transform : UnityEngine.MonoBehaviour
     {
+        public string Tag;
+
         public Transform parent;
-        public System.Collections.Generic.List<Transform> children;
+        public System.Collections.Generic.List<Transform> children = new System.Collections.Generic.List<Transform>();
+
+        public bool colliding {  get; private set; }
 
         public Transform firstChild => children[0];
 
@@ -121,6 +126,13 @@ namespace Geometry
             return null;
         }
 
+        public Transform GetChildByTag(string tag)
+        {
+            foreach(Transform child in this.children)
+                if(child.Tag == tag) return child;
+            return null;
+        }
+
         public void LookAt(Vector3 target)
         {
             Vector3 targetForward = (target - position).Normalized;
@@ -128,8 +140,6 @@ namespace Geometry
             if ((targetForward - thisForward).SqrMagnitude < 0.01d) return;
             Vector3 axis = Vector3.Cross(thisForward, targetForward);
             double angle = Vector3.Angle(thisForward, targetForward);
-            UnityEngine.Debug.Log("Fwd " + thisForward.x + " " + thisForward.y + " " + thisForward.z);
-            UnityEngine.Debug.Log(axis.x + " " + axis.y + " " + axis.z + " " + angle);
             rotation *= new Quaternion(axis, angle);
         }
 
@@ -137,15 +147,37 @@ namespace Geometry
         {
             LookAt(target);
             Vector3 thisForward = this.rotation * Vector3.forward;
-            UnityEngine.Debug.Log("Fwd " + thisForward.x + " " + thisForward.y + " " + thisForward.z);
             Vector3 thisUp = this.rotation * Vector3.up;
             Vector3 targetUp = up.Normalized;
             if ((targetUp - thisUp).SqrMagnitude < 0.01d) return;
             Plane plane = new Plane(thisForward, position);
             Vector3 targetUpProjected = plane.Projection(targetUp);
-            UnityEngine.Debug.Log("Proj: " + targetUpProjected.x + " " + targetUpProjected.y + " " + targetUpProjected.z);
             Quaternion q = new Quaternion(thisForward, Vector3.Angle(thisUp, targetUpProjected));
             rotation = q * rotation;
+        }
+
+        public void LookAtPivoting(Vector3 target, Vector3 up)
+        {
+            Vector3 thisForward = this.rotation * Vector3.forward;
+            Plane p = new Plane(up, position);
+            Vector3 proj = p.Projection(target - position).Normalized;
+            double angle = Vector3.Angle(thisForward, proj);
+            if (angle < 0.1d) return;
+            Quaternion q = new Quaternion(up, angle);
+            rotation *= q;
+        }
+
+        private void OnTriggerStay(UnityEngine.Collider collider)
+        {
+            if (collider == null) return;
+            this.position -= 0.1d * ((Vector3)collider.gameObject.transform.position - this.position).Normalized;
+            colliding = true;
+        }
+
+        private void OnTriggerExit(UnityEngine.Collider other)
+        {
+            if (other == null) return;
+            colliding = false;
         }
     }
 }
