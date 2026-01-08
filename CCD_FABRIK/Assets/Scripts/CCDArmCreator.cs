@@ -5,6 +5,7 @@ using Math;
 
 public class CCDArmCreator : UnityEngine.MonoBehaviour
 {
+    [UnityEngine.SerializeField] private InformationPanel panel;
     [UnityEngine.SerializeField] private Vector3 startPos;
     [UnityEngine.SerializeField] private Transform target;
     [UnityEngine.SerializeField] private TransformManager transformManager;
@@ -22,13 +23,13 @@ public class CCDArmCreator : UnityEngine.MonoBehaviour
         joints.Add(root);
         for (int i = 1; i < armLength; i++)
         {
-            Transform trans = Instantiate(jointPrefab, startPos + i * 0.5d * Vector3.forward, Quaternion.identity).transform.GetChild(0).GetComponent<Transform>();
+            Transform trans = Instantiate(jointPrefab, startPos + i * 2d * Vector3.forward, Quaternion.identity).transform.GetChild(0).GetComponent<Transform>();
             trans.parent = joints[i - 1];
             trans.Tag = "Joint";
             joints.Add(trans);
         }
         
-        Transform end = Instantiate(endEffectorPrefab, startPos + armLength * 0.5d * Vector3.forward, Quaternion.identity).GetComponent<Transform>();
+        Transform end = Instantiate(endEffectorPrefab, startPos + armLength * 2d * Vector3.forward, Quaternion.identity).GetComponent<Transform>();
         end.parent = joints[(int)armLength - 1];
         joints[(int)armLength - 1].children.Add(end);
 
@@ -40,6 +41,7 @@ public class CCDArmCreator : UnityEngine.MonoBehaviour
         transformManager.transforms.Add(joints[(int)armLength-1]);
         transformManager.transforms.Add(end);
         root.GetComponent<CCD>().target = target;
+        panel.ccd = root.GetComponent<CCD>();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

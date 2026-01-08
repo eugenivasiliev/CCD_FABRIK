@@ -3,8 +3,8 @@ using Math;
 
 public class Controller : UnityEngine.MonoBehaviour
 {
-    static public uint iterations = 20;
-    static public double tolerance = 0.01d;
+    static public uint iterations = 30;
+    static public double tolerance = 0.1d;
 
     [UnityEngine.SerializeField] private double speed = 1d;
     private Transform Transform;
@@ -18,8 +18,8 @@ public class Controller : UnityEngine.MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(UnityEngine.Input.GetKeyDown("z")) iterations++;
-        if(UnityEngine.Input.GetKeyDown("x")) iterations = Functions.Max(iterations - 1, 1u);
+        if(UnityEngine.Input.GetKeyDown("z")) iterations += 5;
+        if(UnityEngine.Input.GetKeyDown("x")) iterations = Functions.Max(iterations - 5, 1u);
 
         if (UnityEngine.Input.GetKeyDown("c")) tolerance *= 1.5d;
         if (UnityEngine.Input.GetKeyDown("v")) tolerance *= 0.66d;

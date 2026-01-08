@@ -3,8 +3,9 @@ using Geometry;
 using InverseKinematics;
 using Math;
 
-public class ArmCreator : UnityEngine.MonoBehaviour
+public class FABRIKArmCreator : UnityEngine.MonoBehaviour
 {
+    [UnityEngine.SerializeField] private InformationPanel panel;
     [UnityEngine.SerializeField] private Vector3 startPos;
     [UnityEngine.SerializeField] private Transform target;
     [UnityEngine.SerializeField] private TransformManager transformManager;
@@ -23,13 +24,13 @@ public class ArmCreator : UnityEngine.MonoBehaviour
         joints.Add(root);
         for (int i = 1; i < armLength; i++)
         {
-            Transform trans = Instantiate(jointPrefab, startPos + i * 0.5d * Vector3.forward, Quaternion.identity).transform.GetChild(0).GetComponent<Transform>();
+            Transform trans = Instantiate(jointPrefab, startPos + i * 2d * Vector3.forward, Quaternion.identity).transform.GetChild(0).GetComponent<Transform>();
             trans.parent = joints[i - 1];
             trans.Tag = "Joint";
             joints.Add(trans);
         }
         
-        Transform end = Instantiate(endEffectorPrefab, startPos + armLength * 0.5d * Vector3.forward, Quaternion.identity).GetComponent<Transform>();
+        Transform end = Instantiate(endEffectorPrefab, startPos + armLength * 2d * Vector3.forward, Quaternion.identity).GetComponent<Transform>();
         end.parent = joints[(int)armLength - 1];
         joints[(int)armLength - 1].children.Add(end);
 
@@ -45,6 +46,7 @@ public class ArmCreator : UnityEngine.MonoBehaviour
         transformManager.transforms.Add(lastMesh);
         transformManager.transforms.Add(end);
         root.GetComponent<FABRIK>().target = target;
+        panel.fabrik = root.GetComponent<FABRIK>();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

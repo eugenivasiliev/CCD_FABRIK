@@ -165,6 +165,8 @@ namespace Math
         /// <returns>Projection from this vector onto another</returns>
         public readonly Vector3 Project(Vector3 v) => ((this * v) / v.SqrMagnitude) * v;
 
+        public static double Distance(Vector3 v1, Vector3 v2) => (v1 - v2).Magnitude;
+
         #region CONSTS
         public static readonly Vector3 zero = new Vector3(0, 0, 0);
         public static readonly Vector3 up = new Vector3(0, 1, 0);

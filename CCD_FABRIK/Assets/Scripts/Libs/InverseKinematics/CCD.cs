@@ -1,8 +1,6 @@
 using Geometry;
 using Math;
 using Joints;
-using UnityEngine.UIElements;
-using NUnit.Framework.Interfaces;
 
 namespace InverseKinematics
 {
@@ -18,11 +16,14 @@ namespace InverseKinematics
         private double totalDistance;
         private Transform end;
 
-        float rotPercent = 0.1f;
-        bool incrRaiseRotAmt = true;
+        private readonly double rotationDamping = 0.3d;
 
-        private readonly double smartAngleTolerance = 0.1d;
+        public double targetDistance
+        {
+            get => (target.position - end.position).Magnitude;
+        }
 
+        public int lastFrameIterations { get; private set; }
 
         public void Init()
         {
@@ -32,90 +33,51 @@ namespace InverseKinematics
             dists = Utils.GetDists(joints, end, out totalDistance);
         }
 
-        /*
-         List<Node> nodes, 
-    Vector3 targ, 
-    float rotPercent        = 0.1f, 
-    bool incrRaiseRotAmt    = true, 
-    int iterCt              = 20, 
-    float eps               = 0.001f)
-{
-    int lastNodeIdx = nodes.Count - 1;
-    Transform endEffector = nodes[lastNodeIdx].transform;
-    float rotAmt = rotPercent;
-    // For each iteration
-    for(int i = 0; i < iterCt; ++i)
-    { 
-        // For each bone in the kinematic chain
-        for(int nit = 0; nit < lastNodeIdx; ++nit)
-        { 
-            
-            Vector3 basePos = nodes[nit].transform.position;
-            Vector3 EEPos = endEffector.position;
 
-            // Calculate Bone->EE
-            Vector3 baseToEE = EEPos - basePos;
-
-            // Calculate Bone->Trg
-            Vector3 baseToTarg = targ - basePos;
-
-            // Calculate rotation
-            Quaternion rotFromto = Quaternion.FromToRotation(baseToEE, baseToTarg);
-
-            // Calculate partial rotation & apply partial rotation
-            Quaternion rotRestrained = Quaternion.Lerp(Quaternion.identity, rotFromto, rotAmt);
-            nodes[nit].transform.rotation = rotRestrained * nodes[nit].transform.rotation;
-        }
-
-        // If increased greediness, increase to where rotation amount is 
-        // close to 1.0 on the final iteration.
-        if(incrRaiseRotAmt)
-            rotAmt += (1.0f - rotPercent)/(iterCt - 1);
-
-        // Check if our IK is at a solution that's "good enough"
-        float distEEtoTarg = (endEffector.position - targ).magnitude;
-        if(distEEtoTarg <= eps)
-            break;
-
-    }*/
-
-        void Update()
+        private void Update()
         {
-            if ((target.position - end.position).Magnitude < Controller.tolerance) return;
-
-            double rotAmt = rotPercent;
-
-            for(int k = 0; k < Controller.iterations; ++k)
+            if (totalDistance < (target.position - root.position).Magnitude)
             {
-                for (int i = joints.Count - 1; i >= 0; i--)
+                for(int i = 0; i < joints.Count; ++i)
                 {
-
-                    Vector3 basePos = joints[i].transform.position;
-                    Vector3 EEPos = end.position;
-
-                    // Calculate Bone->EE
-                    Vector3 baseToEE = EEPos - basePos;
-
-                    // Calculate Bone->Trg
-                    Vector3 baseToTarg = target.position - basePos;
-
-                    double ang = Vector3.Angle(baseToEE, baseToTarg);
-                    Vector3 axis = Vector3.Cross(baseToEE, baseToTarg);
-
-                    joints[i].rotation *= new Quaternion(axis, ang);
-
-                    if (incrRaiseRotAmt)
-                        rotAmt += (1.0f - rotPercent) / (Controller.iterations - 1);
-
-                    //Early exit
-                    if ((target.position - end.position).Magnitude < Controller.tolerance || k > Controller.iterations) return;
+                    joints[i].LookAt(target.position);
                 }
+                lastFrameIterations = 0;
+                return;
             }
+
+            for (int i = 0; i < Controller.iterations; i++)
+            {
+                if ((target.position - end.position).Magnitude < Controller.tolerance)
+                {
+                    lastFrameIterations = i;
+                    return;
+                }
+
+                RotateJoints();
+            }
+
+            lastFrameIterations = (int)Controller.iterations - 1;
         }
 
-        private (Vector3 endVector, Vector3 targetVector) GetRotationVectors(Transform joint)
+        /// <summary>
+        /// Rotates all joints towards target.
+        /// </summary>
+        /// <remarks>Uses <b>damping</b> for better results at the cost of iterations.</remarks>
+        private void RotateJoints()
         {
-            return ((end.position - joint.position).Normalized, (target.position - joint.position).Normalized);
+            for (int j = 0; j < joints.Count; j++)
+            {
+                Vector3 jointPos = joints[j].position;
+                Vector3 targetVec = (target.position - jointPos).Normalized;
+                Vector3 endVec = (end.position - jointPos).Normalized;
+                Vector3 axis = Vector3.Cross(endVec, targetVec);
+                double angle = Vector3.Angle(endVec, targetVec);
+                angle *= rotationDamping;
+                if (Functions.Abs(angle) > Constants.PI / 4) return;
+                Quaternion rot = new Quaternion(axis, angle);
+                joints[j].rotation *= rot;
+            }
         }
     }
 }

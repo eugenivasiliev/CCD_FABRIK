@@ -47,6 +47,7 @@ GameObject:
   - component: {fileID: 2357433078570659118}
   - component: {fileID: 7077506884149128717}
   - component: {fileID: 6304396446405880886}
+  - component: {fileID: 5163823205268071143}
   m_Layer: 0
   m_Name: Mesh
   m_TagString: Untagged
@@ -209,6 +210,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &5163823205268071143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6274935474604441475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 500427bb35d4f434e9aa5e864f0cc20f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6305393102891936293
 GameObject:
   m_ObjectHideFlags: 0
@@ -221,6 +234,7 @@ GameObject:
   - component: {fileID: 4351623775319950383}
   - component: {fileID: 3161571844979587064}
   - component: {fileID: 891069688083702770}
+  - component: {fileID: 5283650559689036949}
   m_Layer: 0
   m_Name: Bone
   m_TagString: Untagged
@@ -308,3 +322,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
+--- !u!114 &5283650559689036949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6305393102891936293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dff0d934c1ea5c8449881782a4952d47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

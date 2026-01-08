@@ -173,18 +173,10 @@ namespace Geometry
             Quaternion q = new Quaternion(up, angle);
             rotation *= q;
         }
-
-        private void OnTriggerStay(UnityEngine.Collider collider)
+        
+        public Vector3 Forward
         {
-            if (collider == null) return;
-            this.position -= 0.1d * ((Vector3)collider.gameObject.transform.position - this.position).Normalized;
-            colliding = true;
-        }
-
-        private void OnTriggerExit(UnityEngine.Collider other)
-        {
-            if (other == null) return;
-            colliding = false;
+            get { return rotation * Vector3.forward; }
         }
     }
 }

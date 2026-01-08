@@ -5,6 +5,8 @@ namespace Math
     /// </summary>
     public static class Functions
     {
+
+        public static double Abs(double x) => (x < 0) ? -x : x;
         public static double Sqrt(double x) => System.Math.Sqrt(x);
 
         public static double Sin(double a) => System.Math.Sin(a);

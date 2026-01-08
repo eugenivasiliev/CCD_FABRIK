@@ -19,6 +19,13 @@ namespace InverseKinematics
 
         private readonly System.Collections.Generic.List<string> tags = new System.Collections.Generic.List<string> { "Joint", "End" };
 
+        public double targetDistance
+        {
+            get => (target.position - end.position).Magnitude;
+        }
+
+        public int lastFrameIterations { get; private set; }
+
         public void Init()
         {
             UnityEngine.Debug.Log("FABRIK");
@@ -34,11 +41,17 @@ namespace InverseKinematics
         {
             for (int k = 0; k < Controller.iterations; ++k)
             {
-                if ((target.position - end.position).Magnitude < Controller.tolerance) return;
+                if ((target.position - end.position).Magnitude < Controller.tolerance)
+                {
+                    lastFrameIterations = k;
+                    return;
+                }
 
                 Forward();
                 Backward();
             }
+
+            lastFrameIterations = (int)Controller.iterations - 1;
         }
 
         /// <summary>
