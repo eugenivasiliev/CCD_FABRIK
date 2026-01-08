@@ -1,0 +1,20 @@
+using System.Collections.Generic;
+
+namespace Geometry {
+    /// <summary>
+    /// Class designed for correct initialisation of the <see cref="Transform"/> hierarchy.
+    /// </summary>
+    public class TransformManager : UnityEngine.MonoBehaviour
+    {
+        public List<Transform> transforms = new List<Transform>();
+        void Awake()
+        {
+            foreach (Transform t in transforms) t.Setup();
+        }
+
+        void LateUpdate()
+        {
+            foreach (Transform t in transforms) t.Refresh();
+        }
+    }
+}
